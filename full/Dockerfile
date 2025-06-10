@@ -17,3 +17,5 @@ RUN conda config --set auto_activate_base false
 RUN conda init
 
 RUN echo 'conda activate sage' >> ~/.bashrc
+
+RUN pip install pretext[homepage,prefigure] --only-binary {greenlet}  --break-system-packages
