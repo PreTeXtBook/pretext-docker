@@ -1,6 +1,13 @@
 FROM oscarlevin/pretext:lite
 
-RUN wget -qO- "https://yihui.org/tinytex/install-bin-unix.sh" | sh
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+RUN wget -O TinyTex.sh "https://yihui.org/tinytex/install-bin-unix.sh" \
+&& bash TinyTex.sh \
+&& rm TinyTex.sh
+
+SHELL ["/bin/bash", "-i", "-c"]
+
 RUN tlmgr install adjustbox amscdx bold-extra braket bussproofs cancel carlisle cases chessfss circuitikz colortbl enumitem extpfeil fontawesome5 fontaxes gensymb imakeidx jknapltx kastrup lambda-lists listings listingsutf8 makeindex marvosym mathalpha mathtools menukeys mhchem microtype musicography newpx newtx nicematrix pdfcol pdfpages pdflscape pgfplots phaistos physics polyglossia pstricks realscripts relsize siunitx skak skaknew smartdiagram snapshot stmaryrd tcolorbox tikz-cd tikzfill titlesec txfonts ulem upquote was xfrac xltxtra xpatch xstring \
 && tlmgr path add
 
