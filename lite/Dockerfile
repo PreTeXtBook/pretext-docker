@@ -8,6 +8,7 @@ RUN apt-get update \
                     npm \
                     python3-dev \
                     python3-louis \
+                    python3-venv \
                     libcairo2-dev \
                     librsvg2-bin \
                     wget \
