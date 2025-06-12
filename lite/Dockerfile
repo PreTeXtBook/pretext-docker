@@ -22,8 +22,8 @@ ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-RUN pip install pip --upgrade \
-&& pip install pretext[homepage,prefigure] codechat-server \
+RUN pip install pip --upgrade --no-cache-dir --no-compile \
+&& pip install pretext[homepage,prefigure] codechat-server --no-cache-dir --no-compile \
 && prefig init \
 && playwright install-deps \
 && playwright install chromium \
