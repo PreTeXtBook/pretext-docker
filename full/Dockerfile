@@ -7,7 +7,12 @@ RUN apt-get update \
                     build-essential \
                     libgmp-dev \
                     libmpfr-dev \
-                    libmpich-dev libopenmpi-dev \
+                    libmpich-dev \
+                    libopenmpi-dev \
+&& export SAGE_CONF_TARGETS="fpylll gmpy2 lrcalc_python memory_allocator pplpy primecountpy" \
+&& python3 -m pip install -v --prefer-binary passagemath-conf \
+&& export PIP_FIND_LINKS="$(sage-config SAGE_SPKG_WHEELS)" \
+&& export PIP_PREFER_BINARY=1 \
 && pip install --prefer-binary passagemath-standard --no-cache-dir \
 && apt-get remove -y \
                     python3-dev \
