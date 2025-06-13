@@ -26,7 +26,7 @@ RUN apt-get update \
                     gcc \
                     build-essential \
 && pip install pip --upgrade --no-cache-dir \
-&& pip install pretext[homepage,prefigure] codechat-server --no-cache-dir \
+&& pip install pretext[homepage,prefigure] codechat-server --prefer-binary --no-cache-dir \
 && prefig init \
 && playwright install-deps \
 && playwright install chromium \
