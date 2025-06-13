@@ -1,5 +1,8 @@
 FROM oscarlevin/pretext:lite
 
+# Set TMPDIR to avoid permission issues on ARM architectures
+ENV TMPDIR=/
+
 RUN wget -O TinyTex.sh "https://yihui.org/tinytex/install-bin-unix.sh" \
 && bash TinyTex.sh \
 && rm TinyTex.sh
@@ -23,12 +26,3 @@ RUN fontconfig_path="/etc/fonts/conf.d/09-texlive-fonts.conf" && \
     fi && \
     fc-cache -f -v
 
-#RUN apt update && apt install -y --no-install-recommends \
-#    texlive \
-#    texlive-plain-generic \
-#    texlive-science \
-#    texlive-xetex \
-#    texlive-fonts-extra \
-#    ghostscript \
-#    asymptote \
-#&& apt-get clean && rm -rf /var/lib/apt/lists/*
