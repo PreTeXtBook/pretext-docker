@@ -1,6 +1,26 @@
 FROM oscarlevin/pretext:small
 
-RUN pip install --prefer-binary passagemath-standard --no-cache-dir
+RUN apt-get update \
+&& apt-get install -y --no-install-recommends \
+                    python3-dev \
+                    gcc \
+                    build-essential \
+                    libgmp-dev \
+                    libmpfr-dev \
+                    libmpich-dev libopenmpi-dev \
+&& pip install --prefer-binary passagemath-standard --no-cache-dir \
+&& apt-get remove -y \
+                    python3-dev \
+                    libcairo2-dev \
+                    gcc \
+                    build-essential \
+                    libgmp-dev \
+                    libmpfr-dev \
+                    libmpich-dev libopenmpi-dev \
+&& apt-get autoremove -y \
+&& apt-get clean \
+&& rm -rf /var/lib/apt/lists/* \
+&& rm -rf /tmp/* /var/tmp/*
 
 #apt-get update && apt-get install -y --no-install-recommends \
 #    binutils \
