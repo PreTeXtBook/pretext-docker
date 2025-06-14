@@ -8,6 +8,10 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN apt-get update \
 && apt-get install -y --no-install-recommends \
                     python3-dev \
+                    bzip2 \
+                    liblzma \
+                    zlib \
+                    libffi \
                     gcc \
                     build-essential \
                     libgmp-dev \
@@ -26,7 +30,8 @@ RUN apt-get update \
                     build-essential \
                     libgmp-dev \
                     libmpfr-dev \
-                    libmpich-dev libopenmpi-dev \
+                    libmpich-dev \
+                    libopenmpi-dev \
 && apt-get autoremove -y \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/* \

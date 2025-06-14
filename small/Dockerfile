@@ -7,7 +7,8 @@ RUN wget -O TinyTex.sh "https://yihui.org/tinytex/install-bin-unix.sh" \
 && bash TinyTex.sh \
 && rm TinyTex.sh
 
-ENV PATH="~/bin:$PATH"
+#TinyTeX installs links to the executable in /root/bin, so we need to add that to the PATH
+ENV PATH="/root/bin:$PATH"
 
 SHELL ["/bin/bash", "-i", "-c"]
 
