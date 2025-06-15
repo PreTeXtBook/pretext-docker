@@ -46,15 +46,15 @@ RUN apt-get update \
                     flit \
                     python3-flit-scm \
                     ppl-dev \
-                    tachyon \
-&& if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
-    echo "Installing additional dependencies for ARM64 architecture" && \
-    export SAGE_CONF_TARGETS="fpylll gmpy2 lrcalc_python memory_allocator pplpy primecountpy" && \
-    export SAGE_NUM_THREADS=1 && \
-    pip install -v passagemath-conf && \
-    export PIP_FIND_LINKS="$(sage-config SAGE_SPKG_WHEELS)" && \
-    export PIP_PREFER_BINARY=1; \
-fi && \
+                    tachyon && \
+#if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+#    echo "Installing additional dependencies for ARM64 architecture" && \
+#    export SAGE_CONF_TARGETS="fpylll gmpy2 lrcalc_python memory_allocator pplpy primecountpy" && \
+#    export SAGE_NUM_THREADS=1 && \
+#    pip install -v passagemath-conf && \
+#    export PIP_FIND_LINKS="$(sage-config SAGE_SPKG_WHEELS)" && \
+#    export PIP_PREFER_BINARY=1; \
+#fi && \
 pip install --prefer-binary passagemath-standard --no-cache-dir && \
 apt-get remove -y \
         python3-dev \
