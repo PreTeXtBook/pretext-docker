@@ -1,41 +1,103 @@
 FROM oscarlevin/pretext:small
 
-
-ENV VIRTUAL_ENV=/opt/venv-passagemath
-RUN python3 -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+ARG TARGETPLATFORM
 
 RUN apt-get update \
 && apt-get install -y --no-install-recommends \
                     python3-dev \
                     bzip2 \
-                    liblzma \
-                    zlib \
-                    libffi \
                     gcc \
                     build-essential \
-                    libgmp-dev \
+                    tox \
+                    libboost-dev \
+                    libboost-regex-dev \
+                    pkg-config \
+                    m4 \
+                    flex \
+                    bison \
+                    bc \
+                    libbz2-dev \
+                    libffi-dev \
+                    libbrial-dev \
+                    libbrial-groebner-dev \
+                    libcdd-dev \
+                    libcdd-tools \
+                    cliquer \
+                    libcliquer-dev \
+                    cmake \
+                    curl \
+                    4ti2 \
+                    libcurl4-openssl-dev \
+                    ecl \
+                    libec-dev \
+                    ninja-build \
+                    patchelf \
                     libmpfr-dev \
-                    libmpich-dev \
-                    libopenmpi-dev \
-&& export SAGE_CONF_TARGETS="fpylll gmpy2 lrcalc_python memory_allocator pplpy primecountpy" \
-&& python3 -m pip install -v --prefer-binary passagemath-conf \
-&& export PIP_FIND_LINKS="$(sage-config SAGE_SPKG_WHEELS)" \
-&& export PIP_PREFER_BINARY=1 \
-&& pip install --prefer-binary passagemath-standard --no-cache-dir \
-&& apt-get remove -y \
-                    python3-dev \
-                    libcairo2-dev \
-                    gcc \
-                    build-essential \
-                    libgmp-dev \
-                    libmpfr-dev \
-                    libmpich-dev \
-                    libopenmpi-dev \
-&& apt-get autoremove -y \
-&& apt-get clean \
-&& rm -rf /var/lib/apt/lists/* \
-&& rm -rf /tmp/* /var/tmp/*
+                    python3-trove-classifiers \
+                    libfplll-dev \
+                    fplll-tools \
+                    python3-fpylll \
+                    libmpc-dev \
+                    python3-typing-extensions \
+                    gfortran \
+                    libzmq3-dev \
+                    libopenblas-dev \
+                    python3-tomli \
+                    flit \
+                    python3-flit-scm \
+                    tachyon \
+&& if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+    echo "Installing additional dependencies for ARM64 architecture" && \
+    export SAGE_CONF_TARGETS="fpylll gmpy2 lrcalc_python memory_allocator pplpy primecountpy" && \
+    pip install -v passagemath-conf && \
+    export PIP_FIND_LINKS="$(sage-config SAGE_SPKG_WHEELS)" && \
+    export PIP_PREFER_BINARY=1; \
+fi && \
+pip install --prefer-binary passagemath-standard --no-cache-dir && \
+apt-get remove -y \
+        python3-dev \
+        bzip2 \
+        gcc \
+        build-essential \
+        tox \
+        libboost-dev \
+        libboost-regex-dev \
+        pkg-config \
+        m4 \
+        flex \
+        bison \
+        bc \
+        libbz2-dev \
+        libffi-dev \
+        libbrial-dev \
+        libbrial-groebner-dev \
+        libcdd-dev \
+        libcdd-tools \
+        cliquer \
+        libcliquer-dev \
+        cmake \
+        curl \
+        4ti2 \
+        libcurl4-openssl-dev \
+        ecl \
+        libec-dev \
+        ninja-build \
+        patchelf \
+        libmpfr-dev \
+        python3-trove-classifiers \
+        python3-fpylll \
+        libmpc-dev \
+        python3-typing-extensions \
+        libfplll-dev \
+        gfortran \
+        libzmq3-dev \
+        libopenblas-dev \
+        python3-tomli \
+        flit \
+        python3-flit-scm \
+        fplll-tools && \
+apt-get autoremove -y && apt-get clean && \
+rm -rf /var/lib/apt/lists/* && rm -rf /tmp/* /var/tmp/*
 
 #apt-get update && apt-get install -y --no-install-recommends \
 #    binutils \

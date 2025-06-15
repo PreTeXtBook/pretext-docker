@@ -25,6 +25,7 @@ RUN apt-get update \
                     librsvg2-bin \
                     gcc \
                     build-essential \
+                    default-jre \
 && pip install pip --upgrade --no-cache-dir \
 && pip install pretext[homepage,prefigure] codechat-server --prefer-binary --no-cache-dir \
 && prefig init \
@@ -33,6 +34,7 @@ RUN apt-get update \
 && echo '/usr/lib/python3/dist-packages' > /usr/local/lib/python3.11/dist-packages/louis.pth \
 && echo '/usr/lib/python3/dist-packages' > /opt/venv/lib/python3.11/site-packages/louis.pth \
 && prefig init \
+&& npm install @mermaid-js/mermaid-cli -g \
 && apt-get remove -y \
                     python3-dev \
                     libcairo2-dev \
