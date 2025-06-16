@@ -25,7 +25,6 @@ RUN apt-get update \
                     librsvg2-bin \
                     gcc \
                     build-essential \
-                    default-jre \
 && pip install pip --upgrade --no-cache-dir \
 && pip install pretext[homepage,prefigure] codechat-server --prefer-binary --no-cache-dir \
 && prefig init \
@@ -44,6 +43,16 @@ RUN apt-get update \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/* \
 && rm -rf /tmp/* /var/tmp/*
+
+# If the platform is linux/arm64, we also need to install default-jre
+ARG TARGETPLATFORM
+
+RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+    apt-get update && \
+    apt-get install -y --no-install-recommends default-jre && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*; \
+fi
 
 # make shell prompt pretty
 RUN echo 'export PS1="\[\e[1;32m\]\u@\h:\[\e[1;34m\]\w \[\e[0m\]\$ "' >> ~/.bashrc
