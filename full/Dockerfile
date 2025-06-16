@@ -33,18 +33,6 @@ RUN apt-get update \
                     ninja-build \
                     patchelf \
                     libmpfr-dev \
-                    python3-trove-classifiers \
-                    libfplll-dev \
-                    fplll-tools \
-                    python3-fpylll \
-                    libmpc-dev \
-                    python3-typing-extensions \
-                    gfortran \
-                    libzmq3-dev \
-                    libopenblas-dev \
-                    python3-tomli \
-                    flit \
-                    python3-flit-scm \
                     ppl-dev && \
 if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
     echo "Installing additional dependencies for ARM64 architecture" && \
@@ -97,6 +85,7 @@ apt-get remove -y \
         flit \
         python3-flit-scm \
         ppl-dev \
+        cython3 \
         fplll-tools && \
 apt-get autoremove -y && apt-get clean && \
 rm -rf /var/lib/apt/lists/* && rm -rf /tmp/* /var/tmp/*

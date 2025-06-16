@@ -60,7 +60,8 @@ jobs:
         if: ${{ github.event.inputs.container == 'all' || github.event.inputs.container == 'full' || github.event.inputs.container == '' }}
         uses: docker/build-push-action@v6
         with:
-          platforms: linux/amd64,linux/arm64
+          #platforms: linux/amd64,linux/arm64
+          platforms: linux/arm64
           context: .
           file: ./full/Dockerfile
           push: true
