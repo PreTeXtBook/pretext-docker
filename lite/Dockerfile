@@ -8,6 +8,7 @@ RUN apt-get update \
                     python3 \
                     python3-pip \
                     python3-venv \
+                    less \
 && apt-get autoremove -y \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/* \
