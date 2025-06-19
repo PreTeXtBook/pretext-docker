@@ -39,7 +39,7 @@ jobs:
         run: |
             PTX_VERSION=$(curl -s https://pypi.org/pypi/pretext/json | grep -oP '"version":\s*"\K[^"]+')
             echo "Latest pretext version: $PTX_VERSION"
-            echo "ptxversion=$PTX_VERSION" >> $GITHUB_ENV
+            echo "PTX_VERSION=$PTX_VERSION" >> $GITHUB_ENV
 
       - name: Build and push base
         if: ${{ github.event.inputs.container == 'all' || github.event.inputs.container == 'base' || github.event.inputs.container == '' }}
@@ -49,7 +49,7 @@ jobs:
           context: .
           file: ./base/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pretext:${{ ptxversion }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pretext:${{ env.PTX_VERSION }}
 
       - name: Build and push full
         if: ${{ github.event.inputs.container == 'all' || github.event.inputs.container == 'full' || github.event.inputs.container == '' }}
@@ -57,7 +57,7 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64
           context: .
-          build-args: BASE_IMAGE_TAG=${{ ptxversion }}
+          build-args: BASE_IMAGE_TAG=${{ env.PTX_VERSION }}
           file: ./full/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pretext-full:${{ ptxversion }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pretext-full:${{ env.PTX_VERSION }}
