@@ -1,4 +1,7 @@
-FROM oscarlevin/pretext:small
+
+ARG BASE_IMAGE_TAG
+
+FROM oscarlevin/pretext:${BASE_IMAGE_TAG}
 
 RUN apt-get update && \
 apt-get install -y --no-install-recommends \
