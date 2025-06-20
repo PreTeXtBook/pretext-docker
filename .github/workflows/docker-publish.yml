@@ -49,7 +49,7 @@ jobs:
           context: .
           file: ./base/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pretext:${{ env.PTX_VERSION }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pretext:${{ env.PTX_VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/pretext:latest
 
       - name: Build and push full
         if: ${{ github.event.inputs.container == 'all' || github.event.inputs.container == 'full' || github.event.inputs.container == '' }}
@@ -60,4 +60,4 @@ jobs:
           build-args: BASE_IMAGE_TAG=${{ env.PTX_VERSION }}
           file: ./full/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pretext-full:${{ env.PTX_VERSION }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pretext-full:${{ env.PTX_VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/pretext-full:latest
