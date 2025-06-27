@@ -37,7 +37,6 @@ RUN apt-get update \
 && npm install @mermaid-js/mermaid-cli -g \
 && apt-get remove -y \
                     python3-dev \
-                    libcairo2-dev \
                     gcc \
                     build-essential \
 && apt-get autoremove -y \

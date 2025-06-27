@@ -35,11 +35,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Get latest pretext version from PyPI
+      - name: Read version from verstion.txt
         run: |
-            PTX_VERSION=$(curl -s https://pypi.org/pypi/pretext/json | grep -oP '"version":\s*"\K[^"]+')
-            echo "Latest pretext version: $PTX_VERSION"
-            echo "PTX_VERSION=$PTX_VERSION" >> $GITHUB_ENV
+            VERSION=$(cat version.txt | tr -d '\n')
+            echo "Container version to deploy: $VERSION"
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Build and push base
         if: ${{ github.event.inputs.container == 'all' || github.event.inputs.container == 'base' || github.event.inputs.container == '' }}
@@ -49,7 +49,7 @@ jobs:
           context: .
           file: ./base/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pretext:${{ env.PTX_VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/pretext:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pretext:${{ env.VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/pretext:latest
 
       - name: Build and push full
         if: ${{ github.event.inputs.container == 'all' || github.event.inputs.container == 'full' || github.event.inputs.container == '' }}
@@ -57,7 +57,7 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64
           context: .
-          build-args: BASE_IMAGE_TAG=${{ env.PTX_VERSION }}
+          build-args: BASE_IMAGE_TAG=${{ env.VERSION }}
           file: ./full/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pretext-full:${{ env.PTX_VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/pretext-full:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pretext-full:${{ env.VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/pretext-full:latest
