@@ -22,12 +22,13 @@ RUN apt-get update \
 && apt-get install -y --no-install-recommends \
                     python3-dev \
                     python3-louis \
+                    python3-cairo \
                     libcairo2-dev \
                     librsvg2-bin \
                     gcc \
                     build-essential \
 && pip install pip --upgrade --no-cache-dir \
-&& pip install pretext[homepage,prefigure] codechat-server --prefer-binary --no-cache-dir \
+&& pip install pretext[all] codechat-server --prefer-binary --no-cache-dir \
 && prefig init \
 && playwright install-deps \
 && playwright install chromium \
