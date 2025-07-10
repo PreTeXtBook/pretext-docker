@@ -1,5 +1,13 @@
 FROM debian:bookworm-slim
 
+# Use bash for the shell
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# Create a script file sourced by both interactive and non-interactive bash shells
+ENV BASH_ENV=/root/.bash_env
+RUN touch "${BASH_ENV}"
+RUN echo '. "${BASH_ENV}"' >> ~/.bashrc
+
 RUN apt-get update \
 && apt-get install -y --no-install-recommends \
                     python3 \
@@ -30,9 +38,10 @@ RUN apt-get update \
                     ca-certificates \
                     gcc \
                     build-essential \
-&& curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash \
+&& curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | PROFILE="${BASH_ENV}" bash \
 && \. "$HOME/.nvm/nvm.sh" \
-&& nvm install 24 \
+&& echo node > .nvmrc \
+&& nvm install \
 && pip install pip --upgrade --no-cache-dir \
 && pip install pretext[all] codechat-server --prefer-binary --no-cache-dir \
 && prefig init \
@@ -73,8 +82,6 @@ RUN wget -O TinyTex.sh "https://yihui.org/tinytex/install-bin-unix.sh" \
 
 #TinyTeX installs links to the executable in /root/bin, so we need to add that to the PATH
 ENV PATH="/root/bin:$PATH"
-
-SHELL ["/bin/bash", "-i", "-c"]
 
 RUN tlmgr install adjustbox amscdx bold-extra braket bussproofs cancel carlisle cases chessfss circuitikz colortbl enumitem extpfeil fontawesome5 fontaxes gensymb hobby imakeidx jknapltx kastrup lambda-lists listings listingsutf8 makeindex marvosym mathalpha mathtools menukeys mhchem microtype musicography newpx newtx nicematrix pdfcol pdfpages pdflscape pgfplots phaistos physics polyglossia pstricks realscripts relsize siunitx skak skaknew smartdiagram snapshot stmaryrd tcolorbox tikz-3dplot tikz-cd tikzfill titlesec txfonts ulem upquote was xfrac xltxtra xpatch xstring \
 && tlmgr path add
