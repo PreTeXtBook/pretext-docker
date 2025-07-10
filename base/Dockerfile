@@ -2,13 +2,9 @@ FROM debian:bookworm-slim
 
 RUN apt-get update \
 && apt-get install -y --no-install-recommends \
-                    git \
-                    wget \
-                    npm \
                     python3 \
                     python3-pip \
                     python3-venv \
-                    less \
 && apt-get autoremove -y \
 && apt-get clean \
 && rm -rf /var/lib/apt/lists/* \
@@ -18,15 +14,25 @@ ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
+
 RUN apt-get update \
 && apt-get install -y --no-install-recommends \
+                    git \
+                    wget \
+                    curl \
+                    less \
                     python3-dev \
                     python3-louis \
                     python3-cairo \
                     libcairo2-dev \
                     librsvg2-bin \
+                    libssl-dev \
+                    ca-certificates \
                     gcc \
                     build-essential \
+&& curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash \
+&& \. "$HOME/.nvm/nvm.sh" \
+&& nvm install 24 \
 && pip install pip --upgrade --no-cache-dir \
 && pip install pretext[all] codechat-server --prefer-binary --no-cache-dir \
 && prefig init \
