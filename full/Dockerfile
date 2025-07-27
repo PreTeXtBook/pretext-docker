@@ -1,5 +1,5 @@
 
-ARG BASE_IMAGE_TAG
+ARG BASE_IMAGE_TAG="latest"
 
 FROM pretextbook/pretext:${BASE_IMAGE_TAG}
 
