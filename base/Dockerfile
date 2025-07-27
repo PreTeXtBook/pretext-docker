@@ -38,10 +38,13 @@ RUN apt-get update \
                     ca-certificates \
                     gcc \
                     build-essential \
-&& curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | PROFILE="${BASH_ENV}" bash \
-&& \. "$HOME/.nvm/nvm.sh" \
-&& echo node > .nvmrc \
-&& nvm install \
+&& curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+&& apt-get install -y --no-install-recommends nodejs \
+&& node -v
+#&& curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | PROFILE="${BASH_ENV}" bash \
+#&& \. "$HOME/.nvm/nvm.sh" \
+#&& echo node > .nvmrc \
+#&& nvm install \
 && pip install pip --upgrade --no-cache-dir \
 && pip install pretext[all] codechat-server --prefer-binary --no-cache-dir \
 && prefig init \
