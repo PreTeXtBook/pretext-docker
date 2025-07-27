@@ -40,7 +40,7 @@ RUN apt-get update \
                     build-essential \
 && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
 && apt-get install -y --no-install-recommends nodejs \
-&& node -v
+&& node -v \
 #&& curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | PROFILE="${BASH_ENV}" bash \
 #&& \. "$HOME/.nvm/nvm.sh" \
 #&& echo node > .nvmrc \
