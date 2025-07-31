@@ -12,6 +12,9 @@ apt-get install -y  --no-install-recommends\
             cysignals-tools \
             python3-cysignals-pari \
             python3-gmpy2 \
+            libgmp-dev \
+            libmpfr-dev \
+            libmpc-dev \
             lrcalc \
             python3-memory-allocator \
             python3-ppl \
