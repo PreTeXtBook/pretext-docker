@@ -9,6 +9,16 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+## [1.3] - 2025-07-31
+
+### Changed
+
+- Switch to nodesource repository for node install.
+- Update passagemath to 10.6.1.
+- Add `parskip` and `marginnote` latex packages.
+
+## [1.2] - 2025-07-10
+
 ### Changed
 
 - Use NVM to install latest version of node, rather than relying on debian package.  This is needed to support building dynamic substitutions.

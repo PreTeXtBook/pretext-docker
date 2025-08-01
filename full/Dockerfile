@@ -16,10 +16,19 @@ apt-get install -y  --no-install-recommends\
             libmpfr-dev \
             libmpc-dev \
             lrcalc \
+            fflas-ffpack \
+            m4 \
+            libm4ri-dev \
+            pari-gp \
+            gsl-bin \
+            libgsl-dev \
             python3-memory-allocator \
             python3-ppl \
             ppl-dev \
             python3-primecountpy && \
+pip install --upgrade pip --no-cache-dir && \
+pip install --force-reinstall --prefer-binary -v passagemath-conf && \
+export PIP_FIND_LINKS=$(sage-config SAGE_SPKG_WHEELS) && \
 pip install --prefer-binary passagemath-standard --no-cache-dir && \
 # clean up
 apt-get remove -y \

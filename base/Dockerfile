@@ -41,10 +41,6 @@ RUN apt-get update \
 && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
 && apt-get install -y --no-install-recommends nodejs \
 && node -v \
-#&& curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | PROFILE="${BASH_ENV}" bash \
-#&& \. "$HOME/.nvm/nvm.sh" \
-#&& echo node > .nvmrc \
-#&& nvm install \
 && pip install pip --upgrade --no-cache-dir \
 && pip install pretext[all] codechat-server --prefer-binary --no-cache-dir \
 && prefig init \
@@ -86,7 +82,7 @@ RUN wget -O TinyTex.sh "https://yihui.org/tinytex/install-bin-unix.sh" \
 #TinyTeX installs links to the executable in /root/bin, so we need to add that to the PATH
 ENV PATH="/root/bin:$PATH"
 
-RUN tlmgr install adjustbox amscdx bold-extra braket bussproofs cancel carlisle cases chessfss circuitikz colortbl enumitem extpfeil fontawesome5 fontaxes gensymb hobby imakeidx jknapltx kastrup lambda-lists listings listingsutf8 makeindex marvosym mathalpha mathtools menukeys mhchem microtype musicography newpx newtx nicematrix pdfcol pdfpages pdflscape pgfplots phaistos physics polyglossia pstricks realscripts relsize siunitx skak skaknew smartdiagram snapshot stmaryrd tcolorbox tikz-3dplot tikz-cd tikzfill titlesec txfonts ulem upquote was xfrac xltxtra xpatch xstring \
+RUN tlmgr install adjustbox amscdx bold-extra braket bussproofs cancel carlisle cases chessfss circuitikz colortbl enumitem extpfeil fontawesome5 fontaxes gensymb hobby imakeidx jknapltx kastrup lambda-lists listings listingsutf8 makeindex marginnote marvosym mathalpha mathtools menukeys mhchem microtype musicography newpx newtx nicematrix parskip pdfcol pdfpages pdflscape pgfplots phaistos physics polyglossia pstricks realscripts relsize siunitx skak skaknew smartdiagram snapshot stmaryrd tcolorbox tikz-3dplot tikz-cd tikzfill titlesec txfonts ulem upquote was xfrac xltxtra xpatch xstring \
 && tlmgr path add
 
 #  Ensure fonts provided by TinyTeX are available, as suggested in the pretext guide
