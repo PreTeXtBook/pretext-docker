@@ -44,7 +44,6 @@ RUN apt-get update \
 && pip install pretext[all] codechat-server --prefer-binary --no-cache-dir \
 && apt-get install  -y --no-install-recommends libnspr4 libnss3 libdbus-1-3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libxkbcommon0 libatspi2.0-0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2 \
 && playwright install chromium \
-&& echo '/usr/lib/python3/dist-packages' > /usr/local/lib/python3.11/dist-packages/louis.pth \
 && echo '/usr/lib/python3/dist-packages' > /opt/venv/lib/python3.11/site-packages/louis.pth \
 && prefig init \
 && npm install @mermaid-js/mermaid-cli -g \
