@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim
+FROM debian:13-slim
 
 # Use bash for the shell
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
