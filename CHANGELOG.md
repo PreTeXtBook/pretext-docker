@@ -9,6 +9,16 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+## [1.4] - 2025-08-17
+
+### Changed
+
+- Use latest debian 13 (trixie) as base image.
+
+### Fixed
+
+- Newer version of `python3-louis` allows for building braille targets without error.
+
 ## [1.3] - 2025-07-31
 
 ### Changed
