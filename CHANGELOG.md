@@ -14,6 +14,7 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 ### Changed
 
 - Use latest debian 13 (trixie) as base image.
+- Added `polynom` latex package.
 
 ### Fixed
 
