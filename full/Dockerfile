@@ -27,8 +27,6 @@ apt-get install -y  --no-install-recommends\
             ppl-dev \
             python3-primecountpy && \
 pip install --upgrade pip --no-cache-dir && \
-pip install --force-reinstall --prefer-binary -v passagemath-conf && \
-export PIP_FIND_LINKS=$(sage-config SAGE_SPKG_WHEELS) && \
 pip install --prefer-binary passagemath-standard --no-cache-dir && \
 # clean up
 apt-get remove -y \
