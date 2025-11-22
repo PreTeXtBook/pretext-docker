@@ -9,6 +9,15 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+### Added
+
+- Add `aymptote` to tlmgr install list.
+- Add `appendix`, `ncctools`, `threeparttable`, `sttools`, `wrapfig`, `multirow`, and `elsarticle` latex packages to support building elsevier articles.
+
+### Changed
+
+- Removed unneeded passagemath setup wheel building step.
+
 ## [1.4] - 2025-08-17
 
 ### Changed
