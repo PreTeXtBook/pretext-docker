@@ -9,6 +9,8 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+## [1.5] - 2025-11-22
+
 ### Added
 
 - Add `aymptote` to tlmgr install list.
