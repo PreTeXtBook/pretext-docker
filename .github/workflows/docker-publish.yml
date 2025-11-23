@@ -27,13 +27,8 @@ jobs:
     steps:
       - name: check disk space
         run: df . -h
-      - name: Remove unnecessary files
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-      - name: check disk space again
-        run: df . -h
-      - name: Free disk space
+      - name: Free disk space (only needed for 'full' container)
+        if: ${{ github.event.inputs.container == 'all' || github.event.inputs.container == 'full' || github.event.inputs.container == '' }}
         run: |
           sudo docker rmi $(docker image ls -aq) >/dev/null 2>&1 || true
           sudo rm -rf \
