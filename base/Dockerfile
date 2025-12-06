@@ -80,7 +80,7 @@ RUN wget -O TinyTex.sh "https://yihui.org/tinytex/install-bin-unix.sh" \
 #TinyTeX installs links to the executable in /root/bin, so we need to add that to the PATH
 ENV PATH="/root/bin:$PATH"
 
-RUN tlmgr install adjustbox amscdx appendix asymptote bold-extra braket bussproofs cancel carlisle cases chessfss circuitikz colortbl elsarticle enumitem extpfeil fontawesome5 fontaxes gensymb hobby imakeidx jknapltx kastrup lambda-lists listings listingsutf8 makeindex marginnote marvosym mathalpha mathtools menukeys mhchem microtype multirow musicography ncctools newpx newtx nicematrix parskip pdfcol pdfpages pdflscape pgfplots phaistos physics polyglossia polynom pstricks realscripts relsize siunitx skak skaknew smartdiagram snapshot stmaryrd sttools tcolorbox threeparttable tikz-3dplot tikz-cd tikzfill titlesec txfonts ulem upquote was wrapfig xfrac xltxtra xpatch xstring \
+RUN tlmgr install adjustbox amscdx appendix asymptote bold-extra braket bussproofs cancel carlisle cases chessfss circuitikz colortbl elsarticle enumitem extpfeil fontawesome5 fontaxes gensymb hobby imakeidx jknapltx kastrup lambda-lists libertinus-fonts listings listingsutf8 makeindex marginnote marvosym mathalpha mathtools menukeys mhchem microtype multirow musicography musixtex-fonts ncctools newpx newtx nicematrix parskip pdfcol pdfpages pdflscape pgfplots phaistos physics polyglossia polynom pstricks realscripts relsize siunitx setspace skak skaknew smartdiagram snapshot stackengine stmaryrd sttools tcolorbox threeparttable tikz-3dplot tikz-cd tikzfill titlesec txfonts ulem upquote was wrapfig xfrac xltxtra xpatch xstring \
 && tlmgr path add
 
 #  Ensure fonts provided by TinyTeX are available, as suggested in the pretext guide

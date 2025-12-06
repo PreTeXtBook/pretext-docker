@@ -9,6 +9,12 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+## [1.6] - 2025-12-06
+
+### Added
+
+- Add `setspace`, `stackengine`, `musixtex-fonts`, and `libertinus-fonts` to tex install.
+
 ## [1.5] - 2025-11-22
 
 ### Added
