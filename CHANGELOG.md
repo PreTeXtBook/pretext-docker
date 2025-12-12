@@ -9,6 +9,10 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+### Added
+
+- Add `tkz-euclide` to tex install.
+
 ## [1.6] - 2025-12-06
 
 ### Added
