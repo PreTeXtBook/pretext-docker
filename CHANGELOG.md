@@ -11,7 +11,7 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ### Added
 
-- Add `tkz-euclide` to tex install.
+- Add `tkz-euclide`, `eepic`, `overpic`, and `pict2e` to tex install.
 
 ## [1.6] - 2025-12-06
 
