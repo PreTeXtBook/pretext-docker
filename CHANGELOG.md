@@ -9,9 +9,11 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+## [1.7] - 2026-01-09
+
 ### Added
 
-- Add `tkz-euclide`, `eepic`, `overpic`, and `pict2e` to tex install.
+- Add `comment`, `fancyhdr`, `tkz-euclide`, `eepic`, `overpic`, and `pict2e` to tex install.
 
 ## [1.6] - 2025-12-06
 
