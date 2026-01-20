@@ -9,6 +9,12 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+## [1.8] - 2026-01-19
+
+### Fixed
+
+- Asymptote should work now, since installing libglut3.12 via apt
+
 ## [1.7] - 2026-01-09
 
 ### Added
