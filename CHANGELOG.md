@@ -13,7 +13,7 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ### Fixed
 
-- Asymptote should work now, since installing libglut3.12 via apt
+- Asymptote should work now, since installing ghostscript and libglut3.12 via apt and dvisvgm with tlmgr.
 
 ## [1.7] - 2026-01-09
 

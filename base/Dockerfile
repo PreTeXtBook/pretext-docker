@@ -33,8 +33,10 @@ RUN apt-get update \
                     python3-louis \
                     python3-cairo \
                     libcairo2-dev \
+                    libglut3.12 \
                     librsvg2-bin \
                     libssl-dev \
+                    ghostscript \
                     gcc \
                     build-essential \
 && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
@@ -42,7 +44,7 @@ RUN apt-get update \
 && node -v \
 && pip install pip --upgrade --no-cache-dir \
 && pip install pretext[all] codechat-server --prefer-binary --no-cache-dir \
-&& apt-get install  -y --no-install-recommends libnspr4 libnss3 libdbus-1-3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libxkbcommon0 libatspi2.0-0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2 libglut3.12 \
+&& apt-get install  -y --no-install-recommends libnspr4 libnss3 libdbus-1-3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libxkbcommon0 libatspi2.0-0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2 \
 && playwright install chromium \
 && echo '/usr/lib/python3/dist-packages' > /usr/local/lib/python3.13/dist-packages/louis.pth \
 && echo '/usr/lib/python3/dist-packages' > /opt/venv/lib/python3.13/site-packages/louis.pth \
@@ -80,7 +82,7 @@ RUN wget -O TinyTex.sh "https://yihui.org/tinytex/install-bin-unix.sh" \
 #TinyTeX installs links to the executable in /root/bin, so we need to add that to the PATH
 ENV PATH="/root/bin:$PATH"
 
-RUN tlmgr install adjustbox amscdx appendix asymptote bold-extra braket bussproofs cancel carlisle cases chessfss circuitikz colortbl comment eepic elsarticle enumitem extpfeil fancyhdr fontawesome5 fontaxes gensymb hobby imakeidx jknapltx kastrup lambda-lists libertinus-fonts listings listingsutf8 makeindex marginnote marvosym mathalpha mathtools menukeys mhchem microtype multirow musicography musixtex-fonts ncctools newpx newtx nicematrix overpic parskip pdfcol pdfpages pdflscape pgfplots phaistos physics pict2e polyglossia polynom pstricks realscripts relsize siunitx setspace skak skaknew smartdiagram snapshot stackengine stmaryrd sttools tcolorbox threeparttable tikz-3dplot tikz-cd tikzfill titlesec tkz-euclide txfonts ulem upquote was wrapfig xfrac xltxtra xpatch xstring \
+RUN tlmgr install adjustbox amscdx appendix asymptote bold-extra braket bussproofs cancel carlisle cases chessfss circuitikz colortbl comment dvisvgm eepic elsarticle enumitem extpfeil fancyhdr fontawesome5 fontaxes gensymb hobby imakeidx jknapltx kastrup lambda-lists libertinus-fonts listings listingsutf8 makeindex marginnote marvosym mathalpha mathtools menukeys mhchem microtype multirow musicography musixtex-fonts ncctools newpx newtx nicematrix overpic parskip pdfcol pdfpages pdflscape pgfplots phaistos physics pict2e polyglossia polynom pstricks realscripts relsize siunitx setspace skak skaknew smartdiagram snapshot stackengine stmaryrd sttools tcolorbox threeparttable tikz-3dplot tikz-cd tikzfill titlesec tkz-euclide txfonts ulem upquote was wrapfig xfrac xltxtra xpatch xstring \
 && tlmgr path add
 
 #  Ensure fonts provided by TinyTeX are available, as suggested in the pretext guide
