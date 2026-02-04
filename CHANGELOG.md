@@ -9,6 +9,12 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+## [1.9] - 2026-02-04
+
+### Fixed
+
+- Node install caused the apt-get update to fail due to missing gpg key.  Fixed by adding key manually.
+
 ## [1.8] - 2026-01-19
 
 ### Fixed
