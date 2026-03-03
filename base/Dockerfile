@@ -10,6 +10,7 @@ RUN echo '. "${BASH_ENV}"' >> ~/.bashrc
 
 RUN apt-get update \
 && apt-get install -y --no-install-recommends \
+                    lacales \
                     python3 \
                     python3-pip \
                     python3-venv \
@@ -22,6 +23,14 @@ ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
+# Generate the specific locale
+RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
+    locale-gen
+
+# Set environment variables
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
 RUN apt-get update \
 && apt-get install -y --no-install-recommends \
@@ -91,7 +100,7 @@ RUN wget -O TinyTex.sh "https://yihui.org/tinytex/install-bin-unix.sh" \
 #TinyTeX installs links to the executable in /root/bin, so we need to add that to the PATH
 ENV PATH="/root/bin:$PATH"
 
-RUN tlmgr install adjustbox amscdx appendix asymptote bold-extra braket bussproofs cancel carlisle cases chessfss circuitikz colortbl comment dvisvgm eepic elsarticle enumitem extpfeil fancyhdr fontawesome5 fontaxes gensymb hobby imakeidx jknapltx kastrup lambda-lists libertinus-fonts listings listingsutf8 makeindex marginnote marvosym mathalpha mathtools menukeys mhchem microtype multirow musicography musixtex-fonts ncctools newpx newtx nicematrix overpic parskip pdfcol pdfpages pdflscape pgfplots phaistos physics pict2e polyglossia polynom pstricks realscripts relsize siunitx setspace skak skaknew smartdiagram snapshot stackengine stmaryrd sttools tcolorbox threeparttable tikz-3dplot tikz-cd tikzfill titlesec tkz-euclide txfonts ulem upquote was wrapfig xfrac xltxtra xpatch xstring \
+RUN tlmgr install adjustbox amscdx appendix asymptote bold-extra braket bussproofs cancel carlisle cases chessfss circuitikz colorprofiles colortbl comment dvisvgm eepic elsarticle enumitem extpfeil fancyhdr fontawesome5 fontaxes gensymb hobby imakeidx jknapltx kastrup lambda-lists latex-lab libertinus-fonts listings listingsutf8 luamml makeindex marginnote marvosym mathalpha mathtools menukeys mhchem microtype multirow musicography musixtex-fonts ncctools newpx newtx nicematrix overpic parskip pdfcol pdfmanagement-testphase pdfpages pdflscape pgfplots phaistos physics pict2e polyglossia polynom pstricks realscripts relsize siunitx setspace skak skaknew smartdiagram snapshot stackengine stmaryrd sttools tagpdf tcolorbox threeparttable tikz-3dplot tikz-cd tikzfill titlesec tkz-euclide txfonts ulem upquote was wrapfig xfrac xltxtra xpatch xstring \
 && tlmgr path add
 
 #  Ensure fonts provided by TinyTeX are available, as suggested in the pretext guide

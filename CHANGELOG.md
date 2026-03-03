@@ -9,6 +9,12 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+## [1.10] - 2026-03-03
+
+### Added
+
+- Support for accessible pdf generation with lualatex.
+
 ## [1.9] - 2026-02-04
 
 ### Fixed
