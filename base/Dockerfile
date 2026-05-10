@@ -50,6 +50,7 @@ RUN apt-get update \
                     build-essential \
                     ca-certificates \
                     gnupg \
+                    xz-utils \
 && NODE_MAJOR=22 \
 # Create a directory for the new repository's keyring, if it doesn't exist
 && mkdir -p /etc/apt/keyrings \
