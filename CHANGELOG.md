@@ -9,6 +9,10 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+### Added
+
+- Add `jing` to use new `pretext validate` command.
+
 ## [1.10] - 2026-03-03
 
 ### Added
