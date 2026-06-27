@@ -9,9 +9,14 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+## [1.11] - 2026-06-27
+
 ### Added
 
 - Add `jing` to use new `pretext validate` command.
+- `full` image: build the latest Asymptote release from source, superseding the older version bundled with `tlmgr`.
+- Full latest version of `asymptote` now available in `full` image.
+- `fop` added to base image to support xsl-fo experimental pdf build.
 
 ## [1.10] - 2026-03-03
 
