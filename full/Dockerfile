@@ -68,9 +68,11 @@ mkdir -p /tmp/asymptote-src && \
 tar -xzf /tmp/asymptote.tgz -C /tmp/asymptote-src --strip-components=1 && \
 cd /tmp/asymptote-src && \
 # Debian's glslang-dev no longer ships libOGLCompiler.a, which configure's
-# Vulkan detection asks for as a fallback link flag; hint the replacement
-# library so that detection has the best chance of succeeding. Harmless if
-# unneeded -- Vulkan detection degrades to a notice, not a build failure.
+# Vulkan detection asks for as a fallback link flag. In practice this never
+# matters on this distro: configure's *first*, simpler linking attempt
+# (-lglslang alone) already succeeds against Debian's glslang-dev, so the
+# -lOGLCompiler fallback path is never reached. This LIBS hint is just a
+# harmless extra safety net in case that ever changes.
 # install-asy depends on the "sty" target, which rebuilds doc/asy-latex.pdf
 # via pdflatex -- that needs LaTeX packages (e.g. hypdoc) the base image's
 # TinyTeX doesn't carry. We don't need that PDF (base/Dockerfile's tlmgr
@@ -88,7 +90,15 @@ apt-get remove -y bison flex build-essential && \
 apt-get autoremove -y && \
 apt-get clean && \
 rm -rf /var/lib/apt/lists/* /tmp/asymptote* /tmp/* /var/tmp/* && \
-asy -version
+# Use the explicit path rather than relying on PATH: the base image's
+# ENV PATH="/root/bin:$PATH" still puts tlmgr's older asy first at this
+# point in the build (the PATH override below only applies to later
+# instructions), so a bare "asy -version" here would silently check the
+# wrong binary. Fail the build if Vulkan didn't actually compile in,
+# since that was the whole point of building from source.
+/usr/local/bin/asy -version 2>&1 | tee /tmp/asy-version.log && \
+grep -q "^Vulkan" /tmp/asy-version.log && \
+rm -f /tmp/asy-version.log
 
 # Make sure the freshly-built asy takes precedence over the older copy
 # that tlmgr placed earlier on PATH in the base image.
