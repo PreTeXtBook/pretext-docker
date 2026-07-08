@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Instructions: Add a subsection under `[Unreleased]` for additions, fixes, changes, and removals of features accompanying each PR.
 
+## [Unreleased]
+
+## [1.13] - 2026-07-08
+
+### Added
+
+- beamer added to tlmgr install list.
+
 ## [1.12] - 2026-06-30
 
 ### Added
