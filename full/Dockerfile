@@ -10,14 +10,17 @@ RUN apt-get update && \
 apt-get install -y --no-install-recommends \
             python3-dev \
             build-essential \
-            gcc && \
+            gcc \
+            g++ && \
 pip install --upgrade pip --no-cache-dir && \
+pip install cysignals==1.12.6 && \
 pip install --prefer-binary passagemath-standard --no-cache-dir && \
 # clean up
 apt-get remove -y \
             python3-dev \
             build-essential \
-            gcc && \
+            gcc \
+            g++ && \
 apt-get autoremove -y && \
 apt-get clean && \
 rm -rf /var/lib/apt/lists/* && \

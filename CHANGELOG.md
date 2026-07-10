@@ -9,6 +9,10 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+### Fixed
+
+- Sage should now work in ARM64 architecture.
+
 ## [1.13] - 2026-07-08
 
 ### Added
