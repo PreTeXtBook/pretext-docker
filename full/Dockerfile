@@ -2,7 +2,7 @@
 ARG BASE_IMAGE_TAG="latest"
 # The asymptote package installed via tlmgr in the base image lags behind
 # upstream releases, so the full image builds the latest release from source.
-ARG ASYMPTOTE_VERSION="3.12"
+ARG ASYMPTOTE_VERSION="3.13"
 
 FROM pretextbook/pretext:${BASE_IMAGE_TAG}
 
@@ -60,6 +60,12 @@ apt-get install -y --no-install-recommends \
             libtirpc-dev \
             libglfw3-dev \
             libgl-dev \
+            libglm-dev \
+            libglu1-mesa-dev \
+            # Without glm's headers, configure silently disables WebGL/OpenGL/Vulkan
+            # entirely ("Could not find glm header files") instead of failing --
+            # it's a compile-time header dependency, not something linked at runtime.
+            # libgl-dev alone doesn't pull in GL/glu.h, which main.cc needs via glew.h.
             libvulkan-dev \
             glslang-dev \
             spirv-tools \
@@ -98,9 +104,12 @@ rm -rf /var/lib/apt/lists/* /tmp/asymptote* /tmp/* /var/tmp/* && \
 # point in the build (the PATH override below only applies to later
 # instructions), so a bare "asy -version" here would silently check the
 # wrong binary. Fail the build if Vulkan didn't actually compile in,
-# since that was the whole point of building from source.
+# since that was the whole point of building from source. "Vulkan" is
+# printed as both an ENABLED and a DISABLED option label, so a plain
+# grep for the word matches either way; only look for it in the slice
+# up to (and not past) "DISABLED OPTIONS:" to actually confirm it's enabled.
 /usr/local/bin/asy -version 2>&1 | tee /tmp/asy-version.log && \
-grep -q "^Vulkan" /tmp/asy-version.log && \
+sed -n '/^ENABLED OPTIONS:/,/^DISABLED OPTIONS:/p' /tmp/asy-version.log | grep -q "^Vulkan" && \
 rm -f /tmp/asy-version.log
 
 # Make sure the freshly-built asy takes precedence over the older copy
@@ -109,3 +118,7 @@ ENV PATH="/usr/local/bin:${PATH}"
 # Codespaces/CI containers have no GPU device nodes; force Mesa's
 # llvmpipe software rasterizer instead of probing for hardware.
 ENV LIBGL_ALWAYS_SOFTWARE=1
+# Containers don't set up an XDG runtime dir, which makes asy's Vulkan
+# loader print a harmless but noisy "XDG_RUNTIME_DIR is invalid" warning
+# on every 3D render.
+ENV XDG_RUNTIME_DIR=/tmp

@@ -21,14 +21,68 @@ on:
           - "full"
 
 jobs:
-  build:
+  version:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      # Job-level `if:` conditions can't see the `matrix` context, so instead
+      # of filtering matrix legs by the "container" input after the fact, we
+      # compute the already-filtered matrix here and hand it to `build`/`merge`
+      # via fromJSON(). See https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
+      build_matrix: ${{ steps.matrix.outputs.build_matrix }}
+      merge_images: ${{ steps.matrix.outputs.merge_images }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Read version from version.txt
+        id: version
+        run: |
+            VERSION=$(cat version.txt | tr -d '\n')
+            echo "Container version to deploy: $VERSION"
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      - name: Compute build/merge matrices from the "container" input
+        id: matrix
+        env:
+          CONTAINER_INPUT: ${{ github.event.inputs.container }}
+        run: |
+            CONTAINER="${CONTAINER_INPUT:-all}"
+            BUILD_MATRIX=$(jq -n --arg container "$CONTAINER" '
+              [
+                {image:"base", file:"./base/Dockerfile", platform:"linux/amd64", runner:"ubuntu-latest"},
+                {image:"base", file:"./base/Dockerfile", platform:"linux/arm64", runner:"ubuntu-24.04-arm"},
+                {image:"full", file:"./full/Dockerfile", platform:"linux/amd64", runner:"ubuntu-latest"},
+                {image:"full", file:"./full/Dockerfile", platform:"linux/arm64", runner:"ubuntu-24.04-arm"}
+              ] | map(select($container == "all" or .image == $container))
+            ')
+            MERGE_IMAGES=$(jq -n --arg container "$CONTAINER" '
+              ["base", "full"] | map(select($container == "all" or . == $container))
+            ')
+            echo "Build matrix: $BUILD_MATRIX"
+            echo "Merge images: $MERGE_IMAGES"
+            echo "build_matrix=$(jq -c . <<< "$BUILD_MATRIX")" >> "$GITHUB_OUTPUT"
+            echo "merge_images=$(jq -c . <<< "$MERGE_IMAGES")" >> "$GITHUB_OUTPUT"
+
+  # Each matrix leg builds a single architecture, natively, on a runner of
+  # that architecture -- no QEMU emulation involved. It pushes an untagged,
+  # digest-only image (push-by-digest); the merge job below stitches the
+  # per-arch digests together into the real multi-arch tags. This is
+  # Docker's documented pattern for multi-platform builds across native
+  # runners: https://docs.docker.com/build/ci/github-actions/multi-platform/
+  build:
+    needs: version
     environment: ${{ github.event_name == 'repository_dispatch' && 'DelayedDeploy' || null }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.version.outputs.build_matrix) }}
+    runs-on: ${{ matrix.runner }}
+    env:
+      REPO: ${{ matrix.image == 'base' && format('{0}/pretext', secrets.DOCKERHUB_USERNAME) || format('{0}/pretext-full', secrets.DOCKERHUB_USERNAME) }}
     steps:
       - name: check disk space
         run: df . -h
-      - name: Free disk space (only needed for 'full' container)
-        if: ${{ github.event.inputs.container == 'all' || github.event.inputs.container == 'full' || github.event.inputs.container == '' }}
+      - name: Free disk space (only needed for 'full' image)
+        if: ${{ matrix.image == 'full' }}
         run: |
           sudo docker rmi $(docker image ls -aq) >/dev/null 2>&1 || true
           sudo rm -rf \
@@ -59,6 +113,7 @@ jobs:
         run: df . -h
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -68,29 +123,71 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Read version from version.txt
+      - name: Prepare platform pair for artifact naming
         run: |
-            VERSION=$(cat version.txt | tr -d '\n')
-            echo "Container version to deploy: $VERSION"
-            echo "VERSION=$VERSION" >> $GITHUB_ENV
+          platform=${{ matrix.platform }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> "$GITHUB_ENV"
 
-      - name: Build and push base
-        if: ${{ github.event.inputs.container == 'all' || github.event.inputs.container == 'base' || github.event.inputs.container == '' }}
+      - name: Build and push by digest
+        id: build
         uses: docker/build-push-action@v6
         with:
-          platforms: linux/amd64,linux/arm64
           context: .
-          file: ./base/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pretext:${{ env.VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/pretext:latest
+          file: ${{ matrix.file }}
+          platforms: ${{ matrix.platform }}
+          build-args: ${{ matrix.image == 'full' && format('BASE_IMAGE_TAG={0}', needs.version.outputs.version) || '' }}
+          outputs: type=image,name=${{ env.REPO }},push-by-digest=true,name-canonical=true,push=true
 
-      - name: Build and push full
-        if: ${{ github.event.inputs.container == 'all' || github.event.inputs.container == 'full' || github.event.inputs.container == '' }}
-        uses: docker/build-push-action@v6
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
         with:
-          platforms: linux/amd64,linux/arm64
-          context: .
-          build-args: BASE_IMAGE_TAG=${{ env.VERSION }}
-          file: ./full/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pretext-full:${{ env.VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/pretext-full:latest
+          name: digests-${{ matrix.image }}-${{ env.PLATFORM_PAIR }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  # Combines each image's per-arch digests (uploaded above) into the real,
+  # multi-arch `:VERSION` and `:latest` tags.
+  merge:
+    needs: [version, build]
+    environment: ${{ github.event_name == 'repository_dispatch' && 'DelayedDeploy' || null }}
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ${{ fromJSON(needs.version.outputs.merge_images) }}
+    runs-on: ubuntu-latest
+    env:
+      REPO: ${{ matrix.image == 'base' && format('{0}/pretext', secrets.DOCKERHUB_USERNAME) || format('{0}/pretext-full', secrets.DOCKERHUB_USERNAME) }}
+    steps:
+      - name: Download digests
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests
+          pattern: digests-${{ matrix.image }}-*
+          merge-multiple: true
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Create manifest list and push
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create \
+            --tag ${{ env.REPO }}:${{ needs.version.outputs.version }} \
+            --tag ${{ env.REPO }}:latest \
+            $(printf '${{ env.REPO }}@sha256:%s ' *)
+
+      - name: Inspect image
+        run: docker buildx imagetools inspect ${{ env.REPO }}:${{ needs.version.outputs.version }}

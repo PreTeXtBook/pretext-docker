@@ -9,9 +9,16 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+## [1.14] - 2026-07-10
+
+### Changed
+
+- `full` image: bump Asymptote to 3.13.
+
 ### Fixed
 
 - Sage should now work in ARM64 architecture.
+- `full` image: Asymptote's from-source build was silently compiling without Vulkan support (missing `libglm-dev`/`libglu1-mesa-dev`), and the build-time check meant to catch this didn't actually distinguish enabled from disabled options. Both are fixed, and Vulkan-based 3D rendering is now confirmed working.
 
 ## [1.13] - 2026-07-08
 
