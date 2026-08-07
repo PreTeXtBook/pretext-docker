@@ -9,6 +9,12 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+## [1.15] - 2026-08-06
+
+### Added
+
+- LaTeX package `footnotehyper` added to support hyperlinked footnotes in PDF output.
+
 ## [1.14] - 2026-07-10
 
 ### Changed
