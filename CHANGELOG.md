@@ -9,6 +9,12 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+## [1.16] - 2026-08-24
+
+###
+
+- LaTeX package `qrcode` added to support links for latex-images.
+
 ## [1.15] - 2026-08-06
 
 ### Added
