@@ -9,6 +9,12 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+## [1.17] - 2026-09-28
+
+### Added
+
+- Python package `citeproc-py-styles` added, supplying the Citation Style Language (CSL) styles used to format references and citations, including the style of a journal named in the publication file.
+
 ## [1.16] - 2026-08-24
 
 ###
