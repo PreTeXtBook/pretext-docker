@@ -14,6 +14,7 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 ### Added
 
 - Python package `citeproc-py-styles` added, supplying the Citation Style Language (CSL) styles used to format references and citations, including the style of a journal named in the publication file.
+- Added `extsizes` to tex install to support larger font sizes in LaTeX documents.
 
 ## [1.16] - 2026-08-24
 
