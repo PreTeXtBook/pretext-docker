@@ -6,6 +6,22 @@ In the base image, all the software to build basic PreTeXt documents, including 
 
 The full image adds asymptote and sagemath in case you want to use these programs to generate images.
 
+## Local WeBWorK rendering
+
+Both images can process WeBWorK exercises with a local copy of PG instead of a remote `webwork2` server, following the [Using a Local Copy of PG](https://pretextbook.org/doc/guide/html/webwork-local-pg-static-processing.html) section of the PreTeXt Guide. This is faster than the default, since each problem is processed in the container rather than sent to a server. (PreTeXt still contacts the `webwork2` server once, to check its version, and live problems in HTML output are still rendered by that server.) The image provides:
+
+- A clone of the [pg](https://github.com/openwebwork/pg) repository at the Guide's default location, `/opt/webwork/pg`, with `PG_ROOT` set to it. The release is pinned by the `PG_VERSION` build argument in `base/Dockerfile`.
+- `/opt/webwork/pg/conf/pg_config.yml`, pointing PG at the image's TeX binaries (`latex`, `xelatex`, `dvisvgm`) and ImageMagick's `convert`.
+- perl, the perl modules PG needs, and ImageMagick (with its policy allowing PDF input) so that `PGtikz.pl` and `PGlateximage.pl` images get their PNG versions.
+
+To use it, set `static-processing` to `local` on the `<webwork>` element of your publication file; `pg-location` can be omitted since pg is at the default location:
+
+```xml
+<webwork static-processing="local" />
+```
+
+Then `pretext generate webwork` (or a build that triggers it) processes the problems with the local PG. Problems authored as `.pg` files on a `webwork2` server (`<webwork source="..."/>`) are still fetched from that server.
+
 ## Building and testing the full image locally
 
 To build the `full` image from source (from the repository root, since the build context needs both `base/` and `full/`):
@@ -52,6 +68,21 @@ asy -f png -render=4 test3d.asy && ls -la test3d.png
 ```
 
 Both commands should report non-trivial file sizes (a few KB or more); the 3D render exercises Mesa's software Vulkan renderer (lavapipe), which is what makes this work in Codespaces/CI containers with no real GPU.
+
+### Testing local WeBWorK rendering
+
+Build-time checks already confirm that PG's perl modules load and that ImageMagick can read a PDF. To see a problem actually rendered, build the WeBWorK representations of a small project inside the container. Any project with `<webwork>` exercises will do; this uses the CLI's `demo` template, which has some, after switching its publication file to local processing:
+
+```
+docker run --rm pretext-full:test bash -c '
+cd /tmp && pretext new demo -d wwtest >/dev/null && cd wwtest
+sed -i "s|<!-- <webwork|<webwork static-processing=\"local\" /><!-- <webwork|" publication/publication.ptx
+pretext generate webwork -t web
+ls generated-assets/webwork
+'
+```
+
+The `pretext generate webwork` log should say each problem was sent "to socket" (rather than fetched from a `webwork2` server), and `generated-assets/webwork` should hold the rendered representations. If a perl module is missing, PG says which one in that same log.
 
 ### Testing Sage
 

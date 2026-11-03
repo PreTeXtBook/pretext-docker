@@ -9,6 +9,10 @@ Instructions: Add a subsection under `[Unreleased]` for additions, fixes, change
 
 ## [Unreleased]
 
+### Added
+
+- Support for local WeBWorK rendering, as described in the PreTeXt Guide's "Using a Local Copy of PG" section: the `pg` repository (pinned by the `PG_VERSION` build argument) is installed at `/opt/webwork/pg` with `PG_ROOT` set, along with perl, the perl modules PG needs, ImageMagick (allowed to read PDF), and the `standalone` LaTeX class. Set `<webwork static-processing="local"/>` in a publication file to use it.
+
 ## [1.17] - 2026-09-28
 
 ### Added
