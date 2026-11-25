@@ -32,6 +32,12 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
+# Exact pretext version to install (e.g. "2.17.3"). The deploy workflow sets
+# this when triggered by a pretext-cli release, so the image is guaranteed to
+# contain that release (and a stale PyPI index fails loudly rather than
+# silently installing the previous version). Empty means "latest".
+ARG PRETEXT_VERSION=
+
 RUN apt-get update \
 && apt-get install -y --no-install-recommends \
                     git \
@@ -85,7 +91,7 @@ RUN apt-get update \
 && apt-get install -y --no-install-recommends nodejs \
 && node -v \
 && pip install pip --upgrade --no-cache-dir \
-&& pip install pretext[all] codechat-server citeproc-py-styles --prefer-binary --no-cache-dir \
+&& pip install "pretext[all]${PRETEXT_VERSION:+==$PRETEXT_VERSION}" codechat-server citeproc-py-styles --prefer-binary --no-cache-dir \
 && apt-get install  -y --no-install-recommends libnspr4 libnss3 libdbus-1-3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libxkbcommon0 libatspi2.0-0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2 \
 && playwright install chromium \
 && echo '/usr/lib/python3/dist-packages' > /usr/local/lib/python3.13/dist-packages/louis.pth \

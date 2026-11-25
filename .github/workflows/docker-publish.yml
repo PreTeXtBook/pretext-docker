@@ -35,6 +35,32 @@ jobs:
             echo "Container version to deploy: $VERSION"
             echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
+      # When triggered by a pretext-cli release, the dispatch payload carries
+      # the version it just published. Block here (and hence every later job,
+      # all of which need this one) until pip can actually resolve that exact
+      # version. `pip download` is used rather than PyPI's JSON API because it
+      # queries the same simple index that `pip install` in the Dockerfile
+      # will, and that index can lag behind the JSON API.
+      - name: Wait for pretext release on PyPI
+        if: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.version }}
+        env:
+          PRETEXT_VERSION: ${{ github.event.client_payload.version }}
+        run: |
+          if ! [[ "$PRETEXT_VERSION" =~ ^[0-9]+(\.[0-9]+)*([a-z]+[0-9]*)?$ ]]; then
+            echo "::error::Unexpected pretext version in dispatch payload: '$PRETEXT_VERSION'"
+            exit 1
+          fi
+          for i in $(seq 1 40); do
+            if pip download --no-deps --no-cache-dir -d /tmp/pretext-check "pretext==$PRETEXT_VERSION" >/dev/null 2>&1; then
+              echo "pretext $PRETEXT_VERSION is available on PyPI"
+              exit 0
+            fi
+            echo "Attempt $i: pretext $PRETEXT_VERSION not yet available, retrying in 30s"
+            sleep 30
+          done
+          echo "::error::Timed out waiting for pretext $PRETEXT_VERSION to appear on PyPI"
+          exit 1
+
   # Each matrix leg below builds a single architecture, natively, on a runner
   # of that architecture -- no QEMU emulation involved. It pushes an untagged,
   # digest-only image (push-by-digest); the following merge job stitches the
@@ -44,7 +70,6 @@ jobs:
   build_base:
     needs: version
     if: ${{ needs.version.result == 'success' && (github.event.inputs.container == 'all' || github.event.inputs.container == 'base' || github.event.inputs.container == '') }}
-    environment: ${{ github.event_name == 'repository_dispatch' && 'DelayedDeploy' || null }}
     strategy:
       fail-fast: false
       matrix:
@@ -81,6 +106,8 @@ jobs:
           context: .
           file: ./base/Dockerfile
           platforms: ${{ matrix.platform }}
+          # Empty on manual runs, which installs the latest pretext.
+          build-args: PRETEXT_VERSION=${{ github.event.client_payload.version }}
           outputs: type=image,name=${{ env.REPO }},push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
@@ -104,7 +131,6 @@ jobs:
   merge_base:
     needs: [version, build_base]
     if: ${{ needs.build_base.result == 'success' && (github.event.inputs.container == 'all' || github.event.inputs.container == 'base' || github.event.inputs.container == '') }}
-    environment: ${{ github.event_name == 'repository_dispatch' && 'DelayedDeploy' || null }}
     runs-on: ubuntu-latest
     env:
       REPO: ${{ format('{0}/pretext', secrets.DOCKERHUB_USERNAME) }}
@@ -153,7 +179,6 @@ jobs:
       needs.version.result == 'success' &&
       (needs.merge_base.result == 'success' || needs.merge_base.result == 'skipped') &&
       (github.event.inputs.container == 'all' || github.event.inputs.container == 'full' || github.event.inputs.container == '')
-    environment: ${{ github.event_name == 'repository_dispatch' && 'DelayedDeploy' || null }}
     strategy:
       fail-fast: false
       matrix:
@@ -241,7 +266,6 @@ jobs:
   merge_full:
     needs: [version, build_full]
     if: ${{ needs.build_full.result == 'success' && (github.event.inputs.container == 'all' || github.event.inputs.container == 'full' || github.event.inputs.container == '') }}
-    environment: ${{ github.event_name == 'repository_dispatch' && 'DelayedDeploy' || null }}
     runs-on: ubuntu-latest
     env:
       REPO: ${{ format('{0}/pretext-full', secrets.DOCKERHUB_USERNAME) }}
